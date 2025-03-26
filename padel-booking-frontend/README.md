@@ -30,6 +30,24 @@ The frontend provides:
    npm start
    ```
 
+## Running Unit Tests
+
+The frontend uses Jest and React Testing Library for unit testing. To run the tests:
+
+1. Ensure all dependencies are installed (including testing libraries):
+
+   ```bash
+   npm install
+   ```
+
+2. Run the tests with the following command:
+
+   ```bash
+   npm test
+   ```
+
+This command will launch Jest in watch mode. It automatically picks up any files with names ending in `.test.js` or `.test.jsx`.
+
 ## Authentication & Admin User
 
 - To test admin capabilities, log in with the default admin account:

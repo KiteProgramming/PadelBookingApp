@@ -64,3 +64,16 @@ For local development, consider using a tool like [dotenv](https://github.com/jo
   ```
   
 For more details on installation and running, refer to the respective README in the frontend folder.
+
+## Running Backend Unit Tests
+
+Backend unit tests are implemented using xUnit and the In-Memory Database provider. To run the backend tests:
+
+1. Navigate to the backend test project directory (commonly named `PadelBookingApp.Tests`).
+2. Ensure required packages are installed (for example, verify `Microsoft.EntityFrameworkCore.InMemory` is in your project).
+3. Open a terminal in the test project folder and run:
+   ```bash
+   dotnet test
+   ```
+   
+This command will build your test project and execute all tests, with the results displayed in your terminal.
