@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PadelBookingApp.Domain.Entities;  // Ensure this points to your Entities folder
+using PadelBookingApp.Domain.Entities;
 
 namespace PadelBookingApp.Infrastructure
 {
@@ -10,5 +10,6 @@ namespace PadelBookingApp.Infrastructure
         { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }

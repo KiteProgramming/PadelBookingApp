@@ -1,21 +1,31 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
+import PadelBooking from './components/PadelBooking';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
         <Router>
-            <nav>
-                <ul>
-                    <li><Link to="/login">Login</Link></li>
-                    <li><Link to="/register">Register</Link></li>
-                </ul>
-            </nav>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-            </Routes>
+            <Navbar />
+            <div className="container mt-3">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route 
+                        path="/booking" 
+                        element={
+                            <ProtectedRoute>
+                                <PadelBooking />
+                            </ProtectedRoute>
+                        } 
+                    />
+                </Routes>
+            </div>
         </Router>
     );
 }
