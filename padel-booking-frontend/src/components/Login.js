@@ -19,8 +19,9 @@ function Login() {
                 email,
                 password
             });
-            localStorage.setItem('accessToken', response.data.accessToken);            
+            localStorage.setItem('accessToken', response.data.accessToken);                     
             setTimeout(() => {
+                window.dispatchEvent(new Event('authChange'));
                 navigate('/booking');
             }, 1000);
         } catch (error) {

@@ -1,40 +1,66 @@
 # PadelBookingApp
 
+This is a full-stack Padel Booking application with a .NET backend and a React frontend.
+
 ## Overview
 
-This project is a full-stack Padel Court Booking System featuring an ASP.NET Core Web API backend (with JWT authentication, Swagger API documentation, etc.) and a ReactJS frontend.
+The application provides the following key features:
+- User registration/login and JWT-based authentication.
+- Booking a court with time slot and participant selection.
+- Viewing booking history.
+- For administrators: Ability to view and update booking statuses (Approved, Rejected, Pending).
 
-## Dependencies
+## Admin User
 
-This project uses the following key NuGet packages:
+On first run, the application seeds a default admin user if one does not exist:
+- **Username:** `admin@admin.com`
+- **Password:** `admin1234`
 
-- [Microsoft.AspNetCore.Authentication.JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer)
-- [System.IdentityModel.Tokens.Jwt](https://www.nuget.org/packages/System.IdentityModel.Tokens.Jwt) (if needed)
-- [Swashbuckle.AspNetCore](https://www.nuget.org/packages/Swashbuckle.AspNetCore)
+Use these credentials to log in as an admin and access the Admin Booking History page, where you can view all bookings and update their statuses.
 
-These dependencies are automatically restored when you build the solution.
+## Database Setup and Connection
 
-## Setup Instructions
+**Important:** Do not store your database credentials in the configuration files. Instead, use environment variables for sensitive data.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/YourUsername/PadelBookingApp.git
-   ```
-2. Navigate to the API project directory:
-   ```bash
-   cd PadelBookingApp.Api
-   ```
-3. Restore the NuGet packages:
-   ```bash
-   dotnet restore
-   ```
-4. Run the API:
-   ```bash
-   dotnet run
-   ```
-5. Browse to `https://localhost:{PORT}/swagger` to see the API documentation (if in Development mode).
+### Changing Database Credentials
 
-## Notes
+1. Open the `appsettings.json` file in the `PadelBookingApp.Api` project.
+2. Remove or replace the static values for the database username, password, and database name with environment variable references.
 
-- The JWT secret key is generated automatically at runtime if not provided via the `JWT_SECRET_KEY` environment variable.
-- For production use, consider using a secure secret storage solution (e.g., environment variables, Azure Key Vault, etc.).
+For example, update your connection string like this:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}"
+  },
+  "...": "..."
+}
+```
+
+Or configure it in your startup code (e.g. using `Environment.GetEnvironmentVariable("DB_USER")`, etc.).  
+Make sure you update the `.env` file (or configure your environment variables) on your local machine with the following keys:
+
+```
+DB_NAME=your_database_name
+DB_USER=your_username
+DB_PASSWORD=your_password
+```
+
+### Setting Up Environment Variables
+
+For local development, consider using a tool like [dotenv](https://github.com/joho/godotenv) (for .NET you might use the [dotnet user-secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows)) to manage these values without including them in your repository.
+
+## Running the Application
+
+- **Backend:** Navigate to the `PadelBookingApp.Api` directory and run:
+  ```bash
+  dotnet run
+  ```
+- **Frontend:** Navigate to the React app directory (e.g. `client` or `frontend`) and run:
+  ```bash
+  npm install
+  npm start
+  ```
+  
+For more details on installation and running, refer to the respective README in the frontend folder.

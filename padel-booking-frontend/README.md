@@ -1,70 +1,43 @@
-# Getting Started with Create React App
+# PadelBookingApp Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the React frontend for the PadelBookingApp application.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+The frontend provides:
+- A login/registration page for users.
+- A booking page with a calendar and time slot selection.
+- A booking history view.
+- Conditional navigation options (normal booking history or admin booking history) based on your credentials.
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Install dependencies:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+   ```bash
+   npm install
+   ```
 
-### `npm test`
+2. Create a `.env` file in this directory and set the base URL for your API:
+   
+   ```env
+   REACT_APP_API_BASE_URL=http://localhost:5000
+   ```
+   
+3. Run the development server:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   npm start
+   ```
 
-### `npm run build`
+## Authentication & Admin User
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- To test admin capabilities, log in with the default admin account:
+  - **Username:** `admin@admin.com`
+  - **Password:** `admin1234`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+When logged in as an admin, you will see an **Admin Booking History** link in the navbar. This page will allow you to view all bookings and update statuses.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Additional Configuration
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ensure that your backend (API) has been configured to use environment variables for the connection string. Refer to the main README in the root folder for more details.

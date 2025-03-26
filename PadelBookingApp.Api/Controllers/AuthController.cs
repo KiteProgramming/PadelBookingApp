@@ -25,88 +25,53 @@ namespace PadelBookingApp.Api.Controllers
             _jwtSettings = jwtSettings.Value;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserDto userDto)
-        {
-            // Check if the user already exists
-            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
-            if (existingUser != null)
-            {
-                return BadRequest("User already exists");
-            }
-
-            // Hash the password before storing it.
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-
-            // Create a new user with the hashed password.
-            var user = new User
-            {
-                Email = userDto.Email,
-                Password = hashedPassword,
-                Role = "Customer"
-            };
-
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-            return Ok("User registered successfully");
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto userDto)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
-            // Verify the entered password against the stored hash.
             if (user == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.Password))
             {
                 return Unauthorized("Invalid credentials");
             }
 
-            var accessToken = GenerateJwtToken(user.Email);
-            var refreshToken = Guid.NewGuid().ToString(); // In production, implement proper refresh token handling.
-
+            var accessToken = GenerateJwtToken(user);
+            var refreshToken = Guid.NewGuid().ToString(); // For production: implement proper refresh token handling.
             return Ok(new { AccessToken = accessToken, RefreshToken = refreshToken });
         }
 
-        private string GenerateJwtToken(string email)
+        private string GenerateJwtToken(User user)
         {
-            // Use a consistent 'now'
             var now = DateTime.UtcNow;
-            // Ensure AccessTokenExpirationMinutes is greater than zero.
-            var expirationMinutes = _jwtSettings.AccessTokenExpirationMinutes;
-            if(expirationMinutes <= 0)
-            {
-                // Fallback value; you can also throw an error if this isn't acceptable.
-                expirationMinutes = 15;
-            }
-            
+            var expirationMinutes = _jwtSettings.AccessTokenExpirationMinutes > 0 ? _jwtSettings.AccessTokenExpirationMinutes : 15;
             var expires = now.AddMinutes(expirationMinutes);
-            
-            var keyValue = _jwtSettings.Key;
-            if (string.IsNullOrEmpty(keyValue))
-            {
-                // Fallback: get the key directly from environment.
-                keyValue = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
-            }
+
+            var keyValue = !string.IsNullOrEmpty(_jwtSettings.Key) ? _jwtSettings.Key : Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
             if (string.IsNullOrWhiteSpace(keyValue))
-            {
                 throw new InvalidOperationException("JWT key is not configured.");
-            }
-            var key = Encoding.ASCII.GetBytes(keyValue);
+
+            var keyBytes = Encoding.ASCII.GetBytes(keyValue);
+            var symmetricKey = new SymmetricSecurityKey(keyBytes)
+            {
+                KeyId = "default_key"
+            };
+
+            // Include role claim along with the user's email.
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Role, user.Role) // e.g. "Customer" or "Admin"
+            };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, email)
-                }),
-                // Set IssuedAt and NotBefore to 'now' so that Expires is guaranteed to be later.
+                Subject = new ClaimsIdentity(claims),
                 IssuedAt = now,
                 NotBefore = now,
                 Expires = expires,
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Issuer = string.IsNullOrEmpty(_jwtSettings.Issuer) ? "PadelBookingApp" : _jwtSettings.Issuer,
+                Audience = string.IsNullOrEmpty(_jwtSettings.Audience) ? "PadelBookingAppUsers" : _jwtSettings.Audience,
+                SigningCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
